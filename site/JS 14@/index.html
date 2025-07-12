@@ -1,0 +1,159 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ranking</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- <div id="divM">
+        <div id="menu" onclick="toggleMenu()">☰</div>
+        <div id="links">
+            <a href="https://www.tiktok.com/@anatwdu/video/7512093179961707781?is_from_webapp=1&sender_device=pc">game</a>
+            <a href="https://www.tiktok.com/@anatwdu/video/7512093179961707781?is_from_webapp=1&sender_device=pc">movie</a>
+        </div>
+    </div> -->
+
+
+    <div id="divM" onclick="openMenu()">☰</div>
+
+    <div id="divS">
+        <ul>
+            <a id="item" href="../JS 16@/" target="_blank" rel="noopener noreferrer">game</a>
+        </ul>
+        <button onclick="closeMenu()">✖</button>
+    </div>
+
+    <div id="divasli">
+
+    <input type="text" id="inp1" placeholder="name: ">
+    <button onclick="addMovie()" id="butt1">Add</button>
+    <button onclick="remove()" id="butt2">Delete</button>
+    <button onclick="checkMovie()" id="butt3">Search</button>
+
+    <div id="div1">
+    <ul id="movielist"></ul>
+    <p id="message"></p>
+    </div>
+
+    </div>
+
+    <script>
+
+        let movies = JSON.parse(localStorage.getItem("movies")) || [
+      { name: "dexter" },
+      { name: "breaking bad" },
+      { name: "better call saul" }
+    ];
+
+
+        function updateList() {
+
+          localStorage.setItem("movies", JSON.stringify(movies));
+
+
+          const list = document.getElementById("movielist");
+          list.innerHTML = "";
+
+          movies.forEach((movie, index) => {
+            let li = document.createElement("li");
+
+            let label = document.createElement("span");
+            label.innerHTML = `<span class="rank">${index + 1}</span>${movie.name}`;
+
+            let btns = document.createElement("div");
+            btns.className = "buttons";
+
+            let up = document.createElement("button");
+            up.textContent = "▲";
+            up.className = "up";
+            up.onclick = () => moveUp(index);
+
+            let down = document.createElement("button");
+            down.textContent = "▼";
+            down.className = "down";
+            down.onclick = () => moveDown(index);
+
+            btns.appendChild(up);
+            btns.appendChild(down);
+
+            li.appendChild(label);
+            li.appendChild(btns);
+            list.appendChild(li);
+          })
+        }
+
+
+
+
+        function addMovie() {
+            let input = document.getElementById("inp1").value.trim();
+            if (input && !movies.find(m => m.name.toLowerCase() === input.toLocaleLowerCase())) {
+                movies.push({ name: input });
+                updateList();
+                document.getElementById("message").textContent = "show added✅";
+            } else {
+                document.getElementById("message").textContent = "error⚠️";
+            }
+            document.getElementById("inp1").value = "";
+        }
+
+
+
+        function remove() {
+            let input = document.getElementById("inp1").value.trim();
+            let index = movies.findIndex(m => m.name.toLowerCase() === input.toLowerCase());
+            if (index !== -1) {
+                movies.splice(index, 1);
+                updateList();
+                document.getElementById("message").textContent = "movie deleted❌";
+            } else {
+                document.getElementById("message").textContent = "movie not founded⚠️";
+            }
+            document.getElementById("inp1").value = "";
+        }
+
+
+
+
+        function checkMovie() {
+            let input = document.getElementById("inp1").value.trim();
+            let found = movies.some(m => m.name.toLowerCase() === input.toLowerCase());
+            document.getElementById("message").textContent = found ? "found✅" : "not found❌";
+        }
+
+
+        function moveUp(index) {
+          if (index === 0) return;
+          [movies[index], movies[index - 1]] = [movies[index - 1], movies[index]];
+          updateList();
+        }
+
+        function moveDown(index) {
+          if (index === movies.length - 1) return;
+          [movies[index], movies[index + 1]] = [movies[index + 1], movies[index]];
+          updateList();
+        }
+
+        // function toggleMenu() {
+        //     const menu = document.getElementById("links")
+        //     menu.style.display = menu.style.display === "flex" ? "none" : "flex"
+        // }
+
+        function openMenu() {
+            document.getElementById("divS").classList.add("open")
+            document.getElementById("divM").style.display = "none"
+        }
+
+        function closeMenu() {
+            document.getElementById("divS").classList.remove("open")
+            document.getElementById("divM").style.display = "block"
+        }
+
+        updateList()
+        
+    </script>
+
+</body>
+</html>
